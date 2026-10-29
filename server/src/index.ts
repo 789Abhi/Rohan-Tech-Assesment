@@ -81,8 +81,8 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 // 4. API ROUTES
 // ==============================================================================
 
-// Health Check
-app.get('/api/health', (req, res) => {
+// Health Check (Supporting both /api/health and /health)
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
@@ -95,14 +95,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Resource Routes
-app.use('/api/units', inventoryRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/cost-sheets', costSheetRoutes);
-app.use('/api/quotations', quotationRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+// Mount Resource Routes (Supporting both /api/path and /path)
+app.use(['/api/units', '/units'], inventoryRoutes);
+app.use(['/api/customers', '/customers'], customerRoutes);
+app.use(['/api/cost-sheets', '/cost-sheets'], costSheetRoutes);
+app.use(['/api/quotations', '/quotations'], quotationRoutes);
+app.use(['/api/bookings', '/bookings'], bookingRoutes);
+app.use(['/api/payments', '/payments'], paymentRoutes);
+app.use(['/api/dashboard', '/dashboard'], dashboardRoutes);
 
 // Global Error Handler
 app.use(errorHandler);
