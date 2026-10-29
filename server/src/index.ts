@@ -107,8 +107,8 @@ app.use(['/api/dashboard', '/dashboard'], dashboardRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-// Start Server
-if (process.env.NODE_ENV !== 'test') {
+// Start Server (Avoid calling app.listen inside Vercel serverless execution)
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`=======================================================`);
     console.log(`🛡️ Rohan Core Lite Backend Server (Hardened & Secured)`);

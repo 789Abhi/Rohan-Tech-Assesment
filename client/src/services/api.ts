@@ -21,10 +21,20 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   };
 
   const response = await fetch(url, { ...options, headers });
-  const data = await response.json();
+  const text = await response.text();
+
+  let data: any;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    if (!response.ok) {
+      throw new Error(`Server Error (${response.status}): ${text.slice(0, 120)}`);
+    }
+    throw new Error('Received unexpected non-JSON response from server');
+  }
 
   if (!response.ok) {
-    const errorMsg = data.message || data.error || 'Something went wrong';
+    const errorMsg = data?.message || data?.error || `Request failed with status ${response.status}`;
     throw new Error(errorMsg);
   }
 
