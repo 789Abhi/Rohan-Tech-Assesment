@@ -5,6 +5,14 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
 
+// Catch unhandled errors in serverless runtime
+process.on('uncaughtException', (err) => {
+  console.error('[CRITICAL] Uncaught exception in serverless function:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[CRITICAL] Unhandled promise rejection:', reason);
+});
+
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
