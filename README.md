@@ -251,13 +251,13 @@ Upon booking creation, the system calculates 4 non-negotiable payment milestones
 $$\sum_{i=1}^{4} \text{Milestone Amount}_i = \text{Final Offered Price} \quad (\text{Exact Rupee Reconciliation})$$
 
 #### 3. Overpayment Rejection & Partial Payments
-Payments are recorded per milestone. When a payment of amount $P$ is attempted:
-* If $P > \text{balance\_amount}$, the transaction is aborted with HTTP `400 Bad Request`:  
-  *`"Payment of ₹X exceeds remaining milestone balance of ₹Y."`*
-* If $P \le \text{balance\_amount}$:
-  $$\text{paid\_amount}_{\text{new}} = \text{paid\_amount}_{\text{old}} + P$$
-  $$\text{balance\_amount}_{\text{new}} = \text{balance\_amount}_{\text{old}} - P$$
-  $$\text{status} = \begin{cases} \text{PAID} & \text{if } \text{balance\_amount}_{\text{new}} = 0 \\ \text{PARTIALLY\_PAID} & \text{if } \text{balance\_amount}_{\text{new}} > 0 \end{cases}$$
+Payments are recorded per milestone. When a payment of amount `P` is attempted:
+* If `P > balance_amount`, the transaction is aborted with HTTP `400 Bad Request`:  
+  *"Payment of ₹X exceeds remaining milestone balance of ₹Y."*
+* If `P <= balance_amount`:
+  * `paid_amount = paid_amount + P`
+  * `balance_amount = balance_amount - P`
+  * `status = PAID` if `balance_amount == 0` else `PARTIALLY_PAID`
 
 ### ACID Transactions & Concurrency Locking
 
