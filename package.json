@@ -4,12 +4,12 @@
   "description": "Rohan Core Lite - Real Estate Management (Quotation, Cost Sheet, Booking & Collections)",
   "scripts": {
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:server": "ts-node-dev --respawn --transpile-only server/src/index.ts",
+    "dev:server": "ts-node-dev --project server/tsconfig.json --respawn --transpile-only server/src/index.ts",
     "dev:client": "vite client",
     "build": "vite build client --outDir ../dist",
     "preview": "vite preview client",
     "test": "jest --config server/jest.config.js --runInBand --detectOpenHandles",
-    "seed": "ts-node server/src/db/seed.ts"
+    "seed": "ts-node --project server/tsconfig.json server/src/db/seed.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
