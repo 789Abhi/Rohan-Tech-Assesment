@@ -50,6 +50,9 @@ app.use(
 // Explicitly remove X-Powered-By header
 app.disable('x-powered-by');
 
+// Trust proxy for Vercel and reverse proxies (enables express-rate-limit to read X-Forwarded-For safely)
+app.set('trust proxy', 1);
+
 // ==============================================================================
 // 2. CORS POLICY CONFIGURATION
 // ==============================================================================
