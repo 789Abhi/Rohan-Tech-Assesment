@@ -66,7 +66,7 @@ export const getCostSheets = async (req: Request, res: Response, next: NextFunct
   try {
     const result = await pool.query(
       `SELECT cs.*, 
-              c.name AS customer_name, c.mobile AS customer_mobile,
+              c.name AS customer_name, c.mobile AS customer_mobile, c.email AS customer_email,
               u.project_name, u.unit_number, u.bhk_type, u.area_sqft
        FROM cost_sheets cs
        JOIN customers c ON cs.customer_id = c.id
