@@ -80,6 +80,11 @@ export const updateCustomer = (
     body: JSON.stringify(customerData),
   });
 
+export const deleteCustomer = (id: number) =>
+  request<{ success: boolean; message: string }>(`/customers/${id}`, {
+    method: 'DELETE',
+  });
+
 // 4. Cost Sheets
 export const createCostSheet = (data: {
   customerId: number;

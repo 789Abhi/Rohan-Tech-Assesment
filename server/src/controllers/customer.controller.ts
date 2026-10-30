@@ -104,3 +104,49 @@ export const updateCustomer = async (req: Request, res: Response, next: NextFunc
     next(error);
   }
 };
+
+export const deleteCustomer = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    // Check if customer exists
+    const customer = await pool.query('SELECT id, name FROM customers WHERE id = $1', [id]);
+    if (customer.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Customer not found' });
+    }
+
+    // Check if customer is referenced in bookings, quotations, or cost sheets
+    const bookingCheck = await pool.query('SELECT id FROM bookings WHERE customer_id = $1 LIMIT 1', [id]);
+    if (bookingCheck.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Cannot delete customer: Customer has confirmed bookings associated with them.',
+      });
+    }
+
+    const quotationCheck = await pool.query('SELECT id FROM quotations WHERE customer_id = $1 LIMIT 1', [id]);
+    if (quotationCheck.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Cannot delete customer: Customer has active quotations associated with them.',
+      });
+    }
+
+    const costSheetCheck = await pool.query('SELECT id FROM cost_sheets WHERE customer_id = $1 LIMIT 1', [id]);
+    if (costSheetCheck.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Cannot delete customer: Customer has saved cost sheets associated with them.',
+      });
+    }
+
+    await pool.query('DELETE FROM customers WHERE id = $1', [id]);
+
+    res.json({
+      success: true,
+      message: `Customer "${customer.rows[0].name}" deleted successfully.`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
-import { getCustomers, createCustomer, updateCustomer } from '../services/api';
+import { getCustomers, createCustomer, updateCustomer, deleteCustomer } from '../services/api';
 import { Customer } from '../types';
-import { Users, UserPlus, Edit2, Phone, Mail } from 'lucide-react';
+import { Users, UserPlus, Edit2, Trash2, Phone, Mail } from 'lucide-react';
 import { useDebounce } from '../hooks/useDebounce';
 import { usePagination } from '../hooks/usePagination';
 import { Pagination, SearchInput, Button, InputField } from '../components/common';
@@ -13,7 +13,8 @@ const CustomerRow = React.memo<{
   customer: Customer;
   onSelectForCostSheet: (c: Customer) => void;
   onEdit: (c: Customer) => void;
-}>(({ customer: c, onSelectForCostSheet, onEdit }) => {
+  onDelete: (c: Customer) => void;
+}>(({ customer: c, onSelectForCostSheet, onEdit, onDelete }) => {
   return (
     <tr className="hover:bg-slate-50/70 transition">
       <td className="px-6 py-4 font-bold text-slate-900">{c.name}</td>
@@ -45,6 +46,13 @@ const CustomerRow = React.memo<{
           title="Edit Customer"
         >
           <Edit2 className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => onDelete(c)}
+          className="p-1.5 rounded-lg text-red-400 hover:text-red-700 hover:bg-red-50 transition cursor-pointer"
+          title="Delete Customer"
+        >
+          <Trash2 className="w-4 h-4" />
         </button>
       </td>
     </tr>
@@ -119,6 +127,24 @@ export const CustomersPage: React.FC = () => {
     setFormError('');
     setModalOpen(true);
   }, []);
+
+  const handleDelete = useCallback(
+    async (customer: Customer) => {
+      const confirmed = window.confirm(
+        `Are you sure you want to delete customer "${customer.name}"?\nThis action cannot be undone.`
+      );
+      if (!confirmed) return;
+
+      try {
+        await deleteCustomer(customer.id);
+        showToast(`Customer "${customer.name}" deleted successfully.`, 'success');
+        fetchCustomers();
+      } catch (err: any) {
+        showToast(err.message || 'Failed to delete customer', 'error');
+      }
+    },
+    [showToast, fetchCustomers]
+  );
 
   const handleSelectForCostSheet = useCallback(
     (customer: Customer) => {
@@ -215,6 +241,7 @@ export const CustomersPage: React.FC = () => {
                   customer={c}
                   onSelectForCostSheet={handleSelectForCostSheet}
                   onEdit={handleOpenEdit}
+                  onDelete={handleDelete}
                 />
               ))}
             </tbody>
