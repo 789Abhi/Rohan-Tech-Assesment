@@ -29,18 +29,6 @@ const AppContent: React.FC = () => {
         {activeTab === 'collections' && <CollectionsPage />}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>
-            <strong>Rohan Corporation</strong> • Real Estate Management System (Rohan Core Lite)
-          </span>
-          <span>
-            Candidate Coding Assignment Submission • PostgreSQL + Express + React + TypeScript
-          </span>
-        </div>
-      </footer>
-
       {/* Global Toast Notification */}
       <Toast />
     </div>
