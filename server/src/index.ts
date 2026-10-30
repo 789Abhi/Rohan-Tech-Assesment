@@ -127,5 +127,7 @@ if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
 }
 
 module.exports = app;
+module.exports.app = app;
+module.exports.default = app;
 export default app;
 
